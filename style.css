@@ -1,0 +1,36 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color:burlywood
+}
+
+.navbar {
+    margin-bottom: 20px;
+}
+
+footer {
+    margin-top: 30px;
+}
+
+.container {
+    max-width: 1200px;
+}
+
+.card {
+    margin-bottom: 20px;
+}
+
+.hero-image {
+    background-image: url('your-image-path.jpg'); /* Path to your banner image */
+    background-size: cover;
+    background-position: center;
+    height: 400px; /* Adjust based on your preference */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+   
+}
+
+.hero-text {
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    color: aqua;
+}

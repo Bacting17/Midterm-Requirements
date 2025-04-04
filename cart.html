@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Cart - ShopEase</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">ShopEase</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="about.html">About Us</a></li>
+                    <li class="nav-item"><a class="nav-link" href="product.html">Products</a></li>
+                    <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="cart.html" id="cart-link">
+                            Cart <span id="cart-count" class="badge bg-danger">0</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container my-5">
+        <h1>Your Shopping Cart</h1>
+        <div id="cart-items">
+            <!-- Cart items will be dynamically inserted here -->
+        </div>
+        <div id="cart-total" class="d-flex justify-content-between">
+            <h3>Total: $<span id="total-price">0</span></h3>
+        </div>
+        <div class="d-flex justify-content-end mt-3">
+            <button class="btn btn-primary" id="checkout-btn">Proceed to Checkout</button>
+        </div>
+    </div>
+
+    <footer class="bg-dark text-white text-center py-3">
+        &copy; 2025 ShopEase. All rights reserved.
+    </footer>
+
+    <script>
+        // Function to update the cart count in the navbar
+        function updateCartCount() {
+            let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+            document.getElementById('cart-count').textContent = cart.length;
+        }
+
+        // Function to remove an item from the cart
+        function removeFromCart(productId) {
+            let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+            cart = cart.filter(item => item.id !== productId);
+            localStorage.setItem('cart', JSON.stringify(cart));
+            renderCart();
+            updateCartCount();
+        }
+
+        // Function to update the quantity of an item in the cart
+        function updateQuantity(productId, newQuantity) {
+            let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+            const product = cart.find(item => item.id === productId);
+            if (product) {
+                product.quantity = newQuantity;
+                localStorage.setItem('cart', JSON.stringify(cart));
+                renderCart();
+            }
+        }
+
+        // Render the cart items
+        function renderCart() {
+            let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+            const cartItemsContainer = document.getElementById('cart-items');
+            const totalPriceElement = document.getElementById('total-price');
+            cartItemsContainer.innerHTML = ''; // Clear the cart items
+
+            let totalPrice = 0;
+
+            cart.forEach(item => {
+                totalPrice += item.price * item.quantity;
+
+                const cartItemDiv = document.createElement('div');
+                cartItemDiv.classList.add('d-flex', 'justify-content-between', 'align-items-center', 'mb-3');
+                cartItemDiv.innerHTML = `
+                    <div class="cart-item-details d-flex align-items-center">
+                        <img src="${item.image}" alt="${item.name}" class="img-thumbnail" style="width: 100px; height: 100px; object-fit: cover;">
+                        <div class="ms-3">
+                            <h5>${item.name}</h5>
+                            <p>$${item.price} each</p>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <input type="number" class="form-control me-2" value="${item.quantity}" min="1" style="width: 60px;" onchange="updateQuantity(${item.id}, this.value)">
+                        <span class="me-2">Total: $${(item.price * item.quantity).toFixed(2)}</span>
+                        <button class="btn btn-danger" onclick="removeFromCart(${item.id})">Remove</button>
+                    </div>
+                `;
+
+                cartItemsContainer.appendChild(cartItemDiv);
+            });
+
+            totalPriceElement.textContent = totalPrice.toFixed(2);
+        }
+
+        // Event listener for checkout button (Redirects to the checkout page)
+        document.getElementById('checkout-btn').addEventListener('click', function() {
+            // Redirect to checkout page
+            window.location.href = "checkout.html"; // This redirects to checkout.html
+        });
+
+        // Initial render of cart and cart count
+        renderCart();
+        updateCartCount();
+    </script>
+</body>
+</html>

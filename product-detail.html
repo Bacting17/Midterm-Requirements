@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Details - ShopEase</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">ShopEase</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="about.html">About Us</a></li>
+                    <li class="nav-item"><a class="nav-link" href="product.html">Products</a></li>
+                    <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
+                    <li class="nav-item"><a class="nav-link" href="cart.html" id="cart-link">Cart <span id="cart-count" class="badge bg-danger">0</span></a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container my-5">
+        <h1 id="product-name"></h1>
+        <img id="product-image" class="img-fluid" alt="Product Image">
+        <p id="product-price"></p>
+        <p id="product-description"></p>
+        <button id="add-to-cart" class="btn btn-success">Add to Cart</button>
+    </div>
+
+    <footer class="bg-dark text-white text-center py-3">
+        &copy; 2025 ShopEase. All rights reserved.
+    </footer>
+
+    <script>
+        // Sample product data for display
+        const productData = {
+            1: { name: 'Wireless Headphones', image: 'https://jblstore.com.ph/cdn/shop/files/Tune720BT_Black_1.png?v=1741527434', price: 50, description: 'High-quality sound and comfort.' },
+            2: { name: 'Smart Watch', image: 'https://i.ebayimg.com/images/g/Vz0AAOSwAmdkwJNe/s-l400.jpg', price: 70, description: 'Feature-rich smart watch with fitness tracking and notifications.' },
+            3: { name: 'Laptop', image: 'https://www.asus.com/media/Odin/Websites/global/ProductLine/20200824120814.jpg', price: 500, description: 'Powerful laptop with fast performance and a high-resolution display.' },
+            // Add more products as needed
+        };
+
+        // Get product ID from URL query parameter (e.g., product-detail.html?product=1)
+        const urlParams = new URLSearchParams(window.location.search);
+        const productId = parseInt(urlParams.get('product'));
+
+        if (productData[productId]) {
+            const product = productData[productId];
+            document.getElementById('product-name').textContent = product.name;
+            document.getElementById('product-image').src = product.image;
+            document.getElementById('product-price').textContent = '$' + product.price;
+            document.getElementById('product-description').textContent = product.description;
+
+            // Handle Add to Cart button
+            document.getElementById('add-to-cart').addEventListener('click', function() {
+                let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+                const existingProduct = cart.find(item => item.id === productId);
+
+                if (existingProduct) {
+                    existingProduct.quantity += 1; // Increase quantity if item already exists in the cart
+                } else {
+                    cart.push({ id: productId, name: product.name, price: product.price, image: product.image, quantity: 1 });
+                }
+
+                localStorage.setItem('cart', JSON.stringify(cart));
+                alert('Product added to cart!');
+            });
+        } else {
+            document.getElementById('product-name').textContent = 'Product not found';
+            document.getElementById('product-image').style.display = 'none';
+            document.getElementById('product-price').style.display = 'none';
+            document.getElementById('product-description').style.display = 'none';
+            document.getElementById('add-to-cart').style.display = 'none';
+        }
+        // Initial cart count update
+        updateCartCount();
+    </script>
+</body>
+</html>
